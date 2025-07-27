@@ -6,10 +6,15 @@ import Card from '../../components/ui/Card'
 import Button from '../../components/ui/Button'
 import { fetchPosts } from '../../services/api'
 import { Post } from '../../types/Post'
+import { useNav } from '../../hooks/useNavigation'
 
 const POSTS_PER_PAGE = 10
 
 const Posts = () => {
+  // Hooks
+    const { go, nav } = useNav();
+  
+  // States
   const [page, setPage] = useState(1)
 
   const {
@@ -34,7 +39,7 @@ const Posts = () => {
       <ul className="space-y-2">
         {posts.map((post) => (
           <li key={post.id} className="border rounded p-4 shadow transition">
-            <Link to={`/posts/${post.id}`}>
+            <Link to={`${nav.editPost.path(post.id)}`}>
               <h2 className="text-lg font-semibold">{post.title}</h2>
               <p className="text-sm text-gray-600">{post.body}</p>
             </Link>
