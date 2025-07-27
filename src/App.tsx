@@ -1,10 +1,17 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { Suspense, useEffect, useState } from 'react'
-import routes from './navigation/routes'
-import LoadingSpinner from './components/ui/Spinner'
-import ProtectedRoute from './components/ProtectedRoute'
-import Layout from './components/Layout'
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {
+  ComponentType,
+  createElement,
+  LazyExoticComponent,
+  Suspense,
+  useEffect,
+  useState,
+} from "react";
+import routes, { AppRoute } from "./navigation/routes";
+import LoadingSpinner from "./components/ui/Spinner";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Layout from "./components/Layout";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -13,31 +20,62 @@ const queryClient = new QueryClient({
       refetchOnWindowFocus: false,
     },
   },
-})
+});
 
-const RouteComponent = ({ route }: { route: (typeof routes)[number] }) => {
-  const [ready, setReady] = useState(false)
+const RouteComponent = ({ route }: { route: AppRoute }) => {
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     const loadTranslations = async () => {
       if (route.translations) {
-        await Promise.all(route.translations.map((t) => t()))
+        await Promise.all(route.translations.map((t) => t()));
       }
-      setReady(true)
-    }
+      setReady(true);
+    };
 
-    loadTranslations()
-  }, [route.translations])
+    loadTranslations();
+  }, [route.translations]);
 
-  if (!ready) return <LoadingSpinner />
+  if (!ready) return <LoadingSpinner />;
 
-  if (route.renderer.type === 'element') {
-    return route.renderer.component as React.ReactElement
+  if (route.renderer.type === "element") {
+    return route.renderer.component as React.ReactElement;
   }
 
-  const Lazy = route.renderer.component as React.LazyExoticComponent<React.ComponentType<any>>
-  return <Lazy />
-}
+  const Lazy = route.renderer.component as React.LazyExoticComponent<
+    React.ComponentType<any>
+  >;
+  return <Lazy />;
+};
+
+const renderNestedRoutes = (routeList: AppRoute[]) => {
+  return routeList.map((route) => {
+    const { name, path, renderer, permissions, children } = route;
+
+    const element =
+      renderer.type === "element"
+        ? (renderer.component as React.ReactElement)
+        : createElement(
+            Suspense,
+            { fallback: <LoadingSpinner /> },
+            createElement(
+              renderer.component as LazyExoticComponent<ComponentType<any>>
+            )
+          );
+
+    const wrappedElement = permissions?.length ? (
+      <ProtectedRoute permissions={permissions}>{element}</ProtectedRoute>
+    ) : (
+      element
+    );
+
+    return (
+      <Route key={name} path={path} element={wrappedElement}>
+        {children ? renderNestedRoutes(children) : null}
+      </Route>
+    );
+  });
+};
 
 const App = () => {
   return (
@@ -45,7 +83,7 @@ const App = () => {
       <BrowserRouter>
         <Suspense fallback={<LoadingSpinner />}>
           <Routes>
-            {/* Public routes (no permissions required) */}
+            {/* Permission gerektirmeyen route'lar (Layout dışında) */}
             {routes
               .filter((r) => !r.permissions?.length)
               .map((route) => (
@@ -56,24 +94,27 @@ const App = () => {
                 />
               ))}
 
-            {/* Protected routes with Layout */}
+            {/* Permission gerektiren route'lar (Layout içinde) */}
             <Route element={<Layout />}>
               {routes
                 .filter((r) => r.permissions?.length)
-                .map((route) => (
-                  <Route
-                    key={route.name}
-                    path={route.path}
-                    element={
-                      <ProtectedRoute
-                        permissions={route.permissions!}
-                        fallbackPath="/403"
-                      >
-                        <RouteComponent route={route} />
-                      </ProtectedRoute>
-                    }
-                  />
-                ))}
+                .map((route) => {
+                  const element = (
+                    <ProtectedRoute
+                      permissions={route.permissions!}
+                      fallbackPath="/403"
+                    >
+                      <RouteComponent route={route} />
+                    </ProtectedRoute>
+                  );
+
+                  return (
+                    <Route key={route.name} path={route.path} element={element}>
+                      {/* Nested routes'ları burada render et */}
+                      {route.children ? renderNestedRoutes(route.children) : null}
+                    </Route>
+                  );
+                })}
             </Route>
 
             {/* 404 fallback */}
@@ -82,7 +123,7 @@ const App = () => {
         </Suspense>
       </BrowserRouter>
     </QueryClientProvider>
-  )
-}
+  );
+};
 
-export default App
+export default App;

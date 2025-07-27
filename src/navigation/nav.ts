@@ -1,33 +1,36 @@
-import { useUser } from '../store/user'
-import routes from './routes'
+// src/navigation/nav.ts
 
-const user = useUser();
-
-function buildPath(path: string, params: Record<string, string | number> = {}) {
-  let built = path
-  Object.keys(params).forEach((key) => {
-    built = built.replace(`:${key}`, String(params[key]))
-  })
-  return built
+export const nav = {
+  login: {
+    path: () => '/login',
+    go: () => ({ pathname: '/login' }),
+  },
+  dashboard: {
+    path: () => '/',
+    go: () => ({ pathname: '/' }),
+  },
+  posts: {
+    path: () => '/posts',
+    go: () => ({ pathname: '/posts' }),
+  },
+  postDetail: {
+    path: (id: number | string) => `/posts/${id}`,
+    go: (params: { id: number | string }) => ({ pathname: `/posts/${params.id}` }),
+  },
+  editPost: {
+    path: (id: number | string) => `/posts/${id}/edit`,
+    go: (params: { id: number | string }) => ({ pathname: `/posts/${params.id}/edit` }),
+  },
+  postComments: {
+    path: (id: number | string) => `/posts/${id}/comments`,
+    go: (params: { id: number | string }) => ({ pathname: `/posts/${params.id}/comments` }),
+  },
+  createPost: {
+    path: () => '/create',
+    go: () => ({ pathname: '/create' }),
+  },
+  forbidden: {
+    path: () => '/403',
+    go: () => ({ pathname: '/403' }),
+  },
 }
-
-const nav = routes.reduce((acc, route) => {
-  acc[route.name] = {
-    get: (params?: Record<string, any>) => buildPath(route.path, params),
-    go: (params?: Record<string, any>) => {
-      const path = buildPath(route.path, params)
-      const hasPermission = !route.permissions || route.permissions.every(p => user.data?.permissions.includes(p))
-
-      if (!hasPermission) {
-        alert("You are not allowed to access this page.")
-        return
-      }
-
-      window.history.pushState({}, '', path)
-      window.dispatchEvent(new PopStateEvent('popstate'))
-    }
-  }
-  return acc
-}, {} as Record<string, { get: (params?: any) => string, go: (params?: any) => void }>)
-
-export default nav

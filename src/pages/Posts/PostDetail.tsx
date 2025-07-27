@@ -1,41 +1,38 @@
-import { useQuery } from "@tanstack/react-query";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { getPostById } from "../../services/api";
-import Spinner from "../../components/ui/Spinner";
-import Card from "../../components/ui/Card";
-import Button from "../../components/ui/Button";
+import { Outlet, useParams, NavLink } from "react-router-dom"
+import { useQuery } from "@tanstack/react-query"
+import { getPostById } from "../../services/api"
+import Spinner from "../../components/ui/Spinner"
+import Card from "../../components/ui/Card"
+import { useNav } from "../../hooks/useNavigation"
 
 const PostDetail = () => {
-  // Hooks
-  const { id } = useParams();
-  const navigate = useNavigate();
+  const { id } = useParams()
+  const {go, nav} = useNav()
+  
 
-  const {
-    data: post,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["post"],
+  const { data: post, isLoading, error } = useQuery({
+    queryKey: ["post", id],
     queryFn: () => getPostById(id),
-  });
+  })
 
-  if (isLoading) return <Spinner />;
-  if (error) return <div>Something went wrong</div>;
-  if (!post) return <div>No posts found</div>;
+  if (isLoading) return <Spinner />
+  if (error) return <div>Something went wrong</div>
+  if (!post) return <div>No post found</div>
 
   return (
     <Card title={post.title}>
-      <div>{post.body}</div>
-      <div className="flex justify-end gap-2">
-        <Button onClick={() => navigate(`/posts/${id}/edit`)} variant="link">
+      <div className="mb-4">{post.body}</div>
+      <div className="flex gap-4 border-b mb-4">
+        <NavLink to="edit" className={({ isActive }) => (isActive ? "font-bold underline" : "")}>
           Edit
-        </Button>
-          <Button onClick={() => navigate(`/posts/${id}/comments`)} variant="link">
+        </NavLink>
+        <NavLink to="comments" className={({ isActive }) => (isActive ? "font-bold underline" : "")}>
           Comments
-        </Button>
+        </NavLink>
       </div>
+      <Outlet />
     </Card>
-  );
-};
+  )
+}
 
-export default PostDetail;
+export default PostDetail
