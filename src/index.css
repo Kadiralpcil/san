@@ -7,7 +7,7 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: #121212;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -15,3 +15,11 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}  // hide  default Eyeicon for edege 
+
+input::-webkit-credentials-auto-fill-button {
+  visibility: hidden;
+} // hide  default Eyeicon for other browsers
