@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { use, useState } from "react";
 import Button from "../../components/ui/Button";
 import Card from "../../components/ui/Card";
 import Input from "../../components/ui/Input";
 import { useSetUser } from "../../store/user";
 import { useNavigate } from "react-router-dom";
+import { useNav } from "../../hooks/useNavigation";
 
 const allPermissions = [
   "VIEW_POSTS",
@@ -15,7 +16,7 @@ const allPermissions = [
 const Login = () => {
   //Hooks
   const setUser = useSetUser();
-  const navigate = useNavigate()
+  const {go,nav} = useNav()
 
   //States
   const [permissions, setPermissions] = useState<string[]>(['LOGIN']);
@@ -35,7 +36,7 @@ const Login = () => {
       name: username,
       permissions,
     });
-    navigate('/') 
+    go(nav.dashboard.go())
 
   };
   return (

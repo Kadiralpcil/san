@@ -1,7 +1,7 @@
+// routes.ts - güncellenmiş versiyonu
 import { lazy, ReactElement, ComponentType, LazyExoticComponent, createElement } from 'react'
 import Login from '../pages/Login'
 import ForbiddenPage from '../pages/403'
-// import ForbiddenPage from '../pages/ForbiddenPage'
 
 type Permission = 'VIEW_POSTS' | 'VIEW_COMMENTS' | 'EDIT_POST' | 'CREATE_POST' | 'LOGIN'
 
@@ -14,6 +14,7 @@ interface AppRoute {
   }
   permissions?: Permission[]
   translations?: (() => Promise<void>)[]
+  children?: AppRoute[] // Nested routes için
 }
 
 // Lazy-loaded components
@@ -63,26 +64,28 @@ const routes: AppRoute[] = [
     },
     permissions: ['VIEW_POSTS'],
     translations: [() => Promise.resolve()],
-  },
-  {
-    name: 'edit-post',
-    path: '/posts/:id/edit',
-    renderer: {
-      type: 'lazy',
-      component: EditPost,
-    },
-    permissions: ['EDIT_POST'],
-    translations: [() => Promise.resolve()],
-  },
-  {
-    name: 'post-comments',
-    path: '/posts/:id/comments',
-    renderer: {
-      type: 'lazy',
-      component: PostComments,
-    },
-    permissions: ['VIEW_COMMENTS'],
-    translations: [() => Promise.resolve()],
+    children: [
+      {
+        name: 'edit-post',
+        path: 'edit', 
+        renderer: {
+          type: 'lazy',
+          component: EditPost,
+        },
+        permissions: ['EDIT_POST'],
+        translations: [() => Promise.resolve()],
+      },
+      {
+        name: 'post-comments',
+        path: 'comments',
+        renderer: {
+          type: 'lazy',
+          component: PostComments,
+        },
+        permissions: ['VIEW_COMMENTS'],
+        translations: [() => Promise.resolve()],
+      },
+    ]
   },
   {
     name: 'create-post',

@@ -2,15 +2,17 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { useUser } from '../../../store/user';
 import routes from '../../../navigation/routes';
+import { useNav } from '../../../hooks/useNavigation';
 
 const TopBar = () => {
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
+    const { go , nav} = useNav()
+  
   const {data: user} = useUser()
 
   const handleLogout = () => {
     queryClient.removeQueries({ queryKey: ['current-user'] });
-    navigate('/login');
+    go(nav.login.go())
   };
 
   const accessibleRoutes = routes.filter(route =>
