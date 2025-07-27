@@ -24,7 +24,7 @@ const PostCommentsTab = () => {
 
   const hasNextPage = useMemo(() => {
     return comments && comments.length === COMMENTS_PER_PAGE;
-  },[])
+  },[comments])
 
 
   if (isLoading) return <Spinner />;

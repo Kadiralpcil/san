@@ -30,10 +30,10 @@ const Login = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
-    const username = form.get("username") as string;
+    const name = form.get("name") as string;
 
     setUser({
-      name: username,
+      name,
       permissions,
     });
     go(nav.dashboard.go())
@@ -44,10 +44,10 @@ const Login = () => {
       <Card title="Login" className="w-full max-w-sm">
         <form className="space-y-6" onSubmit={handleSubmit}>
           <Input
-            label="username"
-            id="username"
-            name="username"
-            placeholder="username123.."
+            label="name"
+            id="name"
+            name="name"
+            placeholder="name123.."
             required
           />
           <Input

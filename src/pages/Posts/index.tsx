@@ -26,7 +26,7 @@ const Posts = () => {
 
   const hasNextPage = useMemo(() => {
     return posts && posts.length === POSTS_PER_PAGE;
-  }, []);
+  }, [posts]);
 
   if (isLoading) return <Spinner />;
   if (error) return <div>Something went wrong</div>;

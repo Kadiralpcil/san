@@ -4,7 +4,7 @@ import { Permission } from '../navigation/routes'
 export const USER_KEY = ['current-user']
 
 export interface User {
-  username: string
+  name: string
   permissions: Permission[]
 }
 
