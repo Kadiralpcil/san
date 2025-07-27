@@ -10,6 +10,6 @@ export const useNav = () => {
     go: (target: ReturnType<typeof nav[keyof typeof nav]['go']>) => {
       navigate(target.pathname)
     },
-    nav, // eğer sadece path almak istersen
+    nav,
   }
 }
