@@ -20,3 +20,29 @@ export const getPostById = async (id?: string): Promise<Post> => {
   if (!res.ok) throw new Error('Network error')
   return res.json()
 }
+
+export const updatePost = async (id: number | string, body: string) => {
+  const res = await fetch(`https://jsonplaceholder.typicode.com/posts/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ body }),
+  });
+
+  if (!res.ok) throw new Error('Failed to update post');
+  return res.json();
+};
+
+export const createPost = async (title: string, body: string) => {
+  const res = await fetch("https://jsonplaceholder.typicode.com/posts", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ title, body }),
+  });
+
+  if (!res.ok) throw new Error("Failed to create post");
+  return res.json();
+};

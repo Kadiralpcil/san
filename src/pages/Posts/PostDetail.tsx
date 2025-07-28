@@ -5,8 +5,6 @@ import Spinner from "../../components/ui/Spinner";
 import Card from "../../components/ui/Card";
 import { useNav } from "../../hooks/useNavigation";
 import TabPanel from "../../components/ui/TabPanel";
-import EditPostTab from "./EditPostTab";
-import PostCommentsTab from "./PostCommentsTab";
 
 const PostDetail = () => {
   const { id } = useParams();
@@ -32,7 +30,7 @@ const PostDetail = () => {
           tabs={[
             {
               id: "edit",
-              content: <EditPostTab />,
+              content: <Outlet />,
               label: "Edit",
               onClick: () => {
                 go(nav.editPost.go({ id: post.id }));
@@ -40,7 +38,7 @@ const PostDetail = () => {
             },
             {
               id: "comments",
-              content: <PostCommentsTab />,
+              content:  <Outlet />,
               label: "Comments",
               onClick: () => {
                 go(nav.postComments.go({ id: post.id }));
@@ -49,9 +47,9 @@ const PostDetail = () => {
 
           ]}
         />
-
       </div>
-      {/* <Outlet /> */}
+           
+
     </Card>
   );
 };
