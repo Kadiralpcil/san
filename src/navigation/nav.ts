@@ -1,5 +1,3 @@
-// src/navigation/nav.ts
-
 export const nav = {
   login: {
     path: () => '/login',

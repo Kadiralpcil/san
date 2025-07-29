@@ -83,7 +83,6 @@ const App = () => {
       <BrowserRouter>
         <Suspense fallback={<LoadingSpinner />}>
           <Routes>
-            {/* Permission gerektirmeyen route'lar (Layout dışında) */}
             {routes
               .filter((r) => !r.permissions?.length)
               .map((route) => (
@@ -93,8 +92,6 @@ const App = () => {
                   element={<RouteComponent route={route} />}
                 />
               ))}
-
-            {/* Permission gerektiren route'lar (Layout içinde) */}
             <Route element={<Layout />}>
               {routes
                 .filter((r) => r.permissions?.length)
@@ -110,14 +107,11 @@ const App = () => {
 
                   return (
                     <Route key={route.name} path={route.path} element={element}>
-                      {/* Nested routes'ları burada render et */}
                       {route.children ? renderNestedRoutes(route.children) : null}
                     </Route>
                   );
                 })}
             </Route>
-
-            {/* 404 fallback */}
             <Route path="*" element={<Navigate to="/403" replace />} />
           </Routes>
         </Suspense>

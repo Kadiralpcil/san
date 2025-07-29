@@ -64,7 +64,7 @@ const TopBar = () => {
               onClick={handleLogout}
               className="text-sm font-medium"
             >
-              Çıkış
+              Log out
             </Button>
           </div>
         </div>
