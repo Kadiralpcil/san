@@ -18,7 +18,7 @@ const Button: FC<ButtonProps> = ({
       "bg-blue-600 text-white hover:bg-blue-700",
     secondary:
       "bg-gray-200 text-gray-800 hover:bg-gray-300",
-    link: "bg-transparent text-blue-600 hover:underline p-0",
+    link: "bg-transparent text-blue-400 hover:underline p-0",
   };
 
   const combinedClasses = [baseClasses, variantClasses[variant], className]

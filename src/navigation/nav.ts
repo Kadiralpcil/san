@@ -1,12 +1,13 @@
 import type { AppRoute, GeneratedRouteNames, Nav, NavItem, RouteParams } from "../types";
+
 import { replacePath } from "../utils/pathUtils";
 import { findRouteByName } from "../utils/routeUtils";
 
-const toCamelCase = (str: string) => {
+const toCamelCase = (str: string): string => {
   return str.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
 }
-// Routes'tan route name'leri çıkarma fonksiyonu
-const extractRouteNames = (routes: AppRoute[])=>{
+
+const extractRouteNames = (routes: AppRoute[]): string[] => {
   const names: string[] = [];
 
   function collectNames(routeList: AppRoute[]) {
@@ -24,24 +25,18 @@ const extractRouteNames = (routes: AppRoute[])=>{
   return names;
 }
 
-// Navigation fonksiyonu için global değişken - sadece navigate
 let _navigate: ((path: string) => void) | null = null;
+let _nav: Nav | null = null;
+let _routeNames: string[] = [];
 
-// Navigation fonksiyonunu set etme
 export function setNavigate(navigate: (path: string) => void) {
   _navigate = navigate;
 }
 
-// Cache
-let _nav: Nav | null = null;
-let _routeNames: string[] = [];
-
-// Nav objesi oluşturma
- const generateNav = async (): Promise<Nav> =>{
+const generateNav = async (): Promise<Nav> => {
   try {
     const routesModule = await import("./routes");
     const routes = routesModule.default || [];
-
     const nav = {} as Nav;
     _routeNames = extractRouteNames(routes);
 
@@ -55,77 +50,31 @@ let _routeNames: string[] = [];
           return routeInfo ? replacePath(routeInfo.fullPath, params) : "/";
         },
         go: (params?: RouteParams) => {
-          if (!_navigate) {
-            return;
-          }
-
-          // Basit navigation - yetki kontrolü App.tsx'te yapılıyor
+          if (!_navigate) return;
           const routeInfo = findRouteByName(routes, route.name);
           const path = routeInfo ? replacePath(routeInfo.fullPath, params) : "/";
           _navigate(path);
         }
       };
 
-      route.children?.forEach((childRoute) => processRoute(childRoute));
+      route.children?.forEach(processRoute);
     }
 
-    routes.forEach((route: AppRoute) => processRoute(route));
-
+    routes.forEach(processRoute);
     return nav;
   } catch (error) {
     return {} as Nav;
   }
 }
 
-// Fallback nav
-const createFallbackNav = (): Nav =>{
-  const fallback = {} as Nav;
-  const routeNames: GeneratedRouteNames[] = [
-    'login', 'dashboard', 'posts', 'postDetail', 
-    'editPost', 'postComments', 'createPost', 'forbidden'
-  ];
-
-  routeNames.forEach((routeName) => {
-    fallback[routeName] = {
-      get: () => "/",
-      go: () => {
-      }
-    };
-  });
-
-  return fallback;
-}
-
-// Nav proxy objesi - TypeScript tip desteği ile
 const nav: Nav = new Proxy({} as Nav, {
   get(target, prop: string | symbol) {
     if (typeof prop !== "string") return undefined;
-
-    // Nav henüz yüklenmemişse fallback kullan
-    if (!_nav) {
-      generateNav().then((generatedNav) => {
-        _nav = generatedNav;
-      });
-
-      const fallback = createFallbackNav();
-      return (
-        fallback[prop as GeneratedRouteNames] || {
-          get: () => "/",
-          go: () => {
-            console.warn(`Cannot navigate to unknown route: ${prop}`);
-          }
-        }
-      );
-    }
-
-    return (
-      _nav[prop as GeneratedRouteNames] || {
-        get: () => "/",
-        go: () => {
-          console.warn(`Cannot navigate to unknown route: ${prop}`);
-        }
-      }
-    );
+    
+    return _nav?.[prop as GeneratedRouteNames] || {
+      get: () => "/",
+      go: () => {}
+    };
   },
 
   ownKeys() {
@@ -133,16 +82,13 @@ const nav: Nav = new Proxy({} as Nav, {
   },
 
   has(target, prop: string | symbol) {
-    if (typeof prop !== "string") return false;
-    return _nav ? prop in _nav : _routeNames.includes(prop);
+    return typeof prop === "string" && _nav ? prop in _nav : false;
   },
 }) as Nav;
 
-// Nav'i önceden yükle
 generateNav().then((generatedNav) => {
   _nav = generatedNav;
 });
 
 export default nav;
-
 export type { NavItem, Nav, GeneratedRouteNames };

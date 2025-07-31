@@ -1,9 +1,9 @@
-import { Link, useNavigate } from "react-router-dom";
 import Card from "../components/ui/Card";
 import Button from "../components/ui/Button";
+import { useNavigation } from "../hooks/useNavigation";
 
 const ForbiddenPage = () => {
-  const navigate = useNavigate();
+  const {nav} = useNavigation();
 
   return (
     <div className="flex items-center justify-center min-h-screen">
@@ -12,22 +12,15 @@ const ForbiddenPage = () => {
           <h2 className="text-2xl font-bold text-red-600 mb-4">
             403 - Forbidden
           </h2>
-          <p className="text-gray-700 mb-6">
+          <p className="text-gray-500 mb-6">
             You do not have the necessary permissions to access this page.
           </p>
           <div className="flex flex-col">
-
           <Button
             variant="link"
-            onClick={() => navigate(-1)}
+            onClick={() => nav.dashboard.go()}
           >
-            go back
-          </Button>
-          <Button
-            variant="link"
-            onClick={() => navigate(-1)}
-          >
-           go Home
+           Go back to Home page
           </Button>
           </div>
 
