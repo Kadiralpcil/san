@@ -8,14 +8,16 @@ import Card from "../../components/ui/Card";
 import Input from "../../components/ui/Input";
 import Button from "../../components/ui/Button";
 import ToastItem, { Toast } from "../../components/ui/Toast";
-import { useNav } from "../../hooks/useNavigation";
+import { useNavigation } from "../../hooks/useNavigation";
 
 const CreatePost = () => {
-  const {go,nav} = useNav()
+  //Hooks
+  const navigate = useNavigation()
+  //States
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [toastMesseage, setToastMessage] = useState<Toast | null>(null);
-
+  //Queries
   const { mutate, isPending } = useMutation({
     mutationFn: () => createPost(title, body),
     onSuccess: () => {
@@ -24,7 +26,7 @@ const CreatePost = () => {
         type: "success",
         message: "Post updated successfully",
       });
-      go(nav.posts.go())
+      navigate.nav.posts.go();
     },
     onError: () => {
       setToastMessage({

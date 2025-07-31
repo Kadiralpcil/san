@@ -1,14 +1,15 @@
-import { Outlet, useParams, NavLink } from "react-router-dom";
+import { Outlet, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getPostById } from "../../services/api";
 import Spinner from "../../components/ui/Spinner";
 import Card from "../../components/ui/Card";
-import { useNav } from "../../hooks/useNavigation";
 import TabPanel from "../../components/ui/TabPanel";
+import nav from "../../navigation/nav";
+import { useNavigation } from "../../hooks/useNavigation";
 
 const PostDetail = () => {
   const { id } = useParams();
-  const { go, nav } = useNav();
+  const navigate = useNavigation();
 
   const {
     data: post,
@@ -25,6 +26,10 @@ const PostDetail = () => {
 
   return (
     <Card>
+      <div>
+        <p>choose action for</p>
+        <p className="italic text-amber-50">{post.title}</p>
+      </div>
       <div className="flex gap-4 border-b mb-4 h-auto">
         <TabPanel
           tabs={[
@@ -33,23 +38,20 @@ const PostDetail = () => {
               content: <Outlet />,
               label: "Edit",
               onClick: () => {
-                go(nav.editPost.go({ id: post.id }));
+                navigate.nav.editPost.go({ id: post.id });
               },
             },
             {
               id: "comments",
-              content:  <Outlet />,
+              content: <Outlet />,
               label: "Comments",
               onClick: () => {
-                go(nav.postComments.go({ id: post.id }));
+                navigate.nav.postComments.go({ id: post.id });
               },
             },
-
           ]}
         />
       </div>
-           
-
     </Card>
   );
 };

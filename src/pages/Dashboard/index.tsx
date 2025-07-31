@@ -8,7 +8,7 @@ import PostList from "../../components/other/PostList";
 const Dashboard = () => {
   //Queries
   const { data: posts, isLoading: loadingPosts } = useQuery({
-    queryKey: ["recent-posts"],
+    queryKey: ["recent-po sts"],
     queryFn: () => getPosts(0,5),
   });
 
@@ -20,7 +20,7 @@ const Dashboard = () => {
   if (loadingPosts || loadingComments) {
     return <Spinner />;
   }
-  //TODO divider kullan
+  
   return (
     <div className=" md:p-4 lg:p-8 grid gap-8 md:grid-cols-2">
       <Card title="Recent Posts">

@@ -1,21 +1,10 @@
-// routes.ts - güncellenmiş versiyonu
 import { lazy, ReactElement, ComponentType, LazyExoticComponent, createElement } from 'react'
 import Login from '../pages/Login'
 import ForbiddenPage from '../pages/403'
+import { AppRoute } from '../types'
 
-type Permission = 'VIEW_POSTS' | 'VIEW_COMMENTS' | 'EDIT_POST' | 'CREATE_POST' | 'LOGIN'
 
-interface AppRoute {
-  name: string
-  path: string
-  renderer: {
-    type: 'lazy' | 'element'
-    component: ReactElement | LazyExoticComponent<ComponentType<any>> | (() => Promise<{ default: ComponentType<any> }>)
-  }
-  permissions?: Permission[]
-  translations?: (() => Promise<void>)[]
-  children?: AppRoute[] // Nested routes için
-}
+
 
 // Lazy-loaded components
 const Dashboard = lazy(() => import('../pages/Dashboard'))
@@ -108,4 +97,3 @@ const routes: AppRoute[] = [
 ]
 
 export default routes
-export type { AppRoute, Permission }

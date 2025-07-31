@@ -2,9 +2,9 @@ import { useState } from "react";
 import Button from "../../components/ui/Button";
 import Card from "../../components/ui/Card";
 import Input from "../../components/ui/Input";
-import { useSetUser } from "../../store/user";
-import { useNav } from "../../hooks/useNavigation";
 import PermissionChip from "../../components/ui/PermissionChip";
+import { useNavigation } from "../../hooks/useNavigation";
+import { useSetUser } from "../../hooks/useCurrentUser";
 
 // Constants
 const ALL_PERMISSIONS = [
@@ -16,15 +16,10 @@ const ALL_PERMISSIONS = [
 
 const DEFAULT_PERMISSIONS = ["LOGIN"] as const;
 
-interface PermissionSelectorProps {
-  selectedPermissions: string[];
-  onPermissionToggle: (permission: string) => void;
-}
-
 const Login = () => {
   // Hooks
   const setUser = useSetUser();
-  const { go, nav } = useNav();
+  const navigation = useNavigation();
 
   // State
   const [permissions, setPermissions] = useState<string[]>([
@@ -40,17 +35,23 @@ const Login = () => {
     );
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
 
-    const formData = new FormData(e.currentTarget);
-    const name = formData.get("name") as string;
+  const formData = new FormData(e.currentTarget); 
+  const name = formData.get("name") as string;
 
-    if (!name.trim()) return;
-
-    setUser({ name: name.trim(), permissions });
-    go(nav.dashboard.go());
-  };
+  setUser({
+    name,
+    permissions,
+  });
+  
+  setTimeout(() => {
+    console.log("Attempting navigation...");
+    navigation.nav.dashboard.go();
+  }, 50);
+  //waitin 50ms for cache
+};
 
   return (
     <div className="flex items-center justify-center min-h-screen p-4">
@@ -89,7 +90,6 @@ const Login = () => {
               ))}
             </div>
           </div>
-
           <div className="pt-2">
             <Button type="submit" className="w-full">
               Login
