@@ -1,15 +1,13 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import routes from "../../../navigation/routes";
-// import { useNav } from '../../../hooks/useNavigation';
 import Button from "../../ui/Button";
 import { useCurrentUser } from "../../../hooks/useCurrentUser";
 import { useNavigation } from "../../../hooks/useNavigation";
-import nav from "../../../navigation/nav";
 
 const TopBar = () => {
   const queryClient = useQueryClient();
-  // const { go, nav } = useNav();
+  const {nav} = useNavigation();
 
   const user = useCurrentUser();
 

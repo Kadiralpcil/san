@@ -9,7 +9,7 @@ import { useNavigation } from "../../hooks/useNavigation";
 
 const PostDetail = () => {
   const { id } = useParams();
-  const navigate = useNavigation();
+  const {nav} = useNavigation();
 
   const {
     data: post,
@@ -38,7 +38,7 @@ const PostDetail = () => {
               content: <Outlet />,
               label: "Edit",
               onClick: () => {
-                navigate.nav.editPost.go({ id: post.id });
+                nav.editPost.go({ id: post.id });
               },
             },
             {
@@ -46,7 +46,7 @@ const PostDetail = () => {
               content: <Outlet />,
               label: "Comments",
               onClick: () => {
-                navigate.nav.postComments.go({ id: post.id });
+                nav.postComments.go({ id: post.id });
               },
             },
           ]}

@@ -19,7 +19,7 @@ const DEFAULT_PERMISSIONS = ["LOGIN"] as const;
 const Login = () => {
   // Hooks
   const setUser = useSetUser();
-  const navigation = useNavigation();
+  const { nav } = useNavigation();
 
   // State
   const [permissions, setPermissions] = useState<string[]>([
@@ -48,7 +48,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
   
   setTimeout(() => {
     console.log("Attempting navigation...");
-    navigation.nav.dashboard.go();
+      nav.dashboard.go();
   }, 50);
   //waitin 50ms for cache
 };

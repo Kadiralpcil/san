@@ -12,7 +12,7 @@ import { useNavigation } from "../../hooks/useNavigation";
 
 const CreatePost = () => {
   //Hooks
-  const navigate = useNavigation()
+  const {nav} = useNavigation()
   //States
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
@@ -26,7 +26,7 @@ const CreatePost = () => {
         type: "success",
         message: "Post updated successfully",
       });
-      navigate.nav.posts.go();
+      nav.posts.go();
     },
     onError: () => {
       setToastMessage({
