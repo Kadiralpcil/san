@@ -4,7 +4,7 @@ import { getPostById, updatePost } from "../../services/api";
 import Spinner from "../../components/ui/Spinner";
 import Card from "../../components/ui/Card";
 import Button from "../../components/ui/Button";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import type { Toast } from "../../components/ui/Toast";
 import ToastItem from "../../components/ui/Toast";
 

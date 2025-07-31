@@ -1,4 +1,4 @@
-import { Comment } from "../../types/Comment";
+import type { Comment } from "../../types";
 
 interface CommentsProps{
     comments : Comment[]

@@ -1,13 +1,11 @@
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "react-router-dom";
 import Spinner from "../../components/ui/Spinner";
 import Card from "../../components/ui/Card";
 import Button from "../../components/ui/Button";
 import { getPosts } from "../../services/api";
-import { Post } from "../../types/Post";
-import { useNav } from "../../hooks/useNavigation";
 import PostList from "../../components/other/PostList";
+import type { Post } from "../../types";
 
 const POSTS_PER_PAGE = 10;
 

@@ -1,7 +1,6 @@
 import { Navigate } from 'react-router-dom'
-import { useUser } from '../../store/user'
-import { Permission } from '../../navigation/routes'
-import Spinner from '../ui/Spinner'
+import { useCurrentUser } from '../../hooks/useCurrentUser'
+import type { Permission } from '../../types'
 
 interface ProtectedRouteProps {
   children: React.ReactNode
@@ -14,11 +13,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   permissions,
   fallbackPath = '/403',
 }) => {
-  const { data: user, isLoading } = useUser()
-
-  if (isLoading) {
-    return <Spinner />
-  }
+   const user = useCurrentUser();
 
   if (!user) {
     return <Navigate to="/login" replace />
@@ -26,6 +21,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 
   const hasRequiredPermissions = permissions.every((permission) =>
     user.permissions.includes(permission)
+
   )
 
   if (!hasRequiredPermissions) {

@@ -8,10 +8,11 @@ import {
   useEffect,
   useState,
 } from "react";
-import routes, { AppRoute } from "./navigation/routes";
+import routes from "./navigation/routes";
 import LoadingSpinner from "./components/ui/Spinner";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Layout from "./components/Layout";
+import type { AppRoute } from "./types";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -107,7 +108,9 @@ const App = () => {
 
                   return (
                     <Route key={route.name} path={route.path} element={element}>
-                      {route.children ? renderNestedRoutes(route.children) : null}
+                      {route.children
+                        ? renderNestedRoutes(route.children)
+                        : null}
                     </Route>
                   );
                 })}
